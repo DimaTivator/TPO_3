@@ -111,3 +111,39 @@ def test_map_controls_buttons_xpath(driver):
 
     wait.until(lambda d: not play_btn.is_enabled())
     assert not play_btn.is_enabled(), "Play button should be disabled after clicking"
+
+
+@pytest.mark.parametrize("item_class, expected_text", [
+    ("prc", "осадки"),
+    ("temp", "температура"),
+    ("wind", "ветер"),
+    ("clou", "облачность"),
+])
+def test_open_map_types(driver, item_class, expected_text):
+    """Проверка, что с главной страницы открываются разные виды карт и становятся активными в меню"""
+    open_page(driver)
+    wait = get_wait(driver)
+
+    maps_block = wait.until(EC.presence_of_element_located(
+        (By.XPATH, '//div[contains(@class, "maps-block")]')
+    ))
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", maps_block)
+
+    item_xpath = (
+        f'.//div[contains(@class, "list-item-{item_class}")]'
+        f'//a[contains(@class, "link-hover")]'
+    )
+    map_link = maps_block.find_element(By.XPATH, item_xpath)
+    driver.execute_script("arguments[0].click();", map_link)
+
+    active_xpath = (
+        '//div[@role="menuitem" '
+        'and contains(@class, "nav-link") '
+        'and contains(@class, "is-active")]'
+    )
+    active_item = wait.until(EC.presence_of_element_located((By.XPATH, active_xpath)))
+
+    assert active_item.text.strip().lower() == expected_text, (
+        f"Expected active menu item to be '{expected_text}', "
+        f"but got '{active_item.text}'"
+    )
