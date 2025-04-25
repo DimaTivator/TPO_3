@@ -12,12 +12,12 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def browser(request):
     return request.config.getoption("--browser")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def driver(browser):
     if browser == "chrome":
         service = ChromeService(ChromeDriverManager().install())
@@ -30,4 +30,3 @@ def driver(browser):
 
     driver.maximize_window()
     yield driver
-    driver.quit()

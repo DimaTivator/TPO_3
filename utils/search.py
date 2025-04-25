@@ -25,7 +25,6 @@ def select_suggestion(wait: WebDriverWait, city_name: str):
     suggestion = wait.until(
         EC.element_to_be_clickable(
             (By.XPATH,
-             f"//div[contains(@class,'search-container')]"
              f"//li[contains(@class,'group-city')]//span[text()='{city_name}']")
         )
     )

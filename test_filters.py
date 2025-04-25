@@ -12,7 +12,7 @@ def test_forecast_filter_toggle(driver):
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", dataset_button)
     driver.execute_script("arguments[0].click();", dataset_button)
 
-    # Скрываем heat-index, включаем pressure
+
     for label, should_be_on in [("Температура по ощущению", False), ("Давление", True)]:
         btn = wait.until(EC.presence_of_element_located(
             (By.XPATH, f"//button[@role='switch'][.//span[text()='{label}']]")
@@ -23,7 +23,6 @@ def test_forecast_filter_toggle(driver):
 
     close_settings_panel(wait)
 
-    # Проверка фильтров
     assert not any(el.is_displayed() for el in driver.find_elements(
         By.XPATH, "//*[contains(@class, 'widget-row-chart-temperature-heat-index')]"
     )), "Heat index should be hidden"
